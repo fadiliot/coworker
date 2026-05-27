@@ -1,0 +1,115 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String?
+  role      Role     @default(USER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  accounts  Account[]
+  logs      TaskApprovalLog[]
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model Account {
+  id           String   @id @default(uuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  provider     String   // "google", "microsoft"
+  emailAddress String   @unique
+  accessToken  String   // Encrypted
+  refreshToken String?  // Encrypted
+  expiresAt    Int?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  emails       EmailMessage[]
+}
+
+model EmailMessage {
+  id          String   @id @default(uuid())
+  accountId   String
+  account     Account  @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  messageId   String   @unique
+  subject     String?
+  from        String
+  to          String
+  body        String   @db.Text
+  conversationId String? // Added for Microsoft Graph conversation tracking
+  threadId    String?    // Added for threading
+  receivedAt  DateTime
+  isProcessed Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  leads       Lead[]
+  tasks       Task[]
+}
+
+model Lead {
+  id             String   @id @default(uuid())
+  emailMessageId String?
+  emailMessage   EmailMessage? @relation(fields: [emailMessageId], references: [id])
+  name           String?
+  email          String   @unique
+  company        String?
+  intent         String?
+  status         LeadStatus @default(NEW)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+enum LeadStatus {
+  NEW
+  CONTACTED
+  QUALIFIED
+  LOST
+}
+
+model Task {
+  id             String   @id @default(uuid())
+  emailMessageId String?
+  emailMessage   EmailMessage? @relation(fields: [emailMessageId], references: [id])
+  type           TaskType
+  payload        Json     // Stores things like suggested draft text
+  status         TaskStatus @default(PENDING_APPROVAL)
+  scheduledFor   DateTime?  // Added for follow-up scheduling
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  logs           TaskApprovalLog[]
+}
+
+enum TaskType {
+  DRAFT_RESPONSE
+  SCHEDULE_FOLLOW_UP
+  UPDATE_CRM
+}
+
+enum TaskStatus {
+  PENDING_APPROVAL
+  APPROVED
+  REJECTED
+  EXECUTED
+  FAILED
+}
+
+model TaskApprovalLog {
+  id        String   @id @default(uuid())
+  taskId    String
+  task      Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  action    String   // "APPROVED", "REJECTED", "EDITED_AND_APPROVED"
+  comment   String?
+  createdAt DateTime @default(now())
+}
