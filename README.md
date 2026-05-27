@@ -1,4 +1,4 @@
-# 🚀 Sales Co-worker — AI-Powered Sales Assistant Hub
+#  Sales Co-worker — AI-Powered Sales Assistant Hub
 
 Welcome to the **Sales Co-worker** project! This repository is organized as a unified monorepo containing three core components: an AI-driven **Backend API**, a Next.js **Web Dashboard (Frontend)**, and an Expo/React Native **Mobile Client**.
 
@@ -61,7 +61,7 @@ The backend is a robust Express service built using TypeScript, featuring Prisma
 
 ---
 
-### 2. 💻 Web Dashboard (`/frontend`)
+### 2.  Web Dashboard (`/frontend`)
 The web panel is a modern CRM interface built using Next.js, custom CSS variables, and tailwind/ui components.
 
 1. **Navigate to the frontend directory:**
@@ -80,7 +80,7 @@ The web panel is a modern CRM interface built using Next.js, custom CSS variable
 
 ---
 
-### 3. 📱 Mobile Application (`/mobile`)
+### 3.  Mobile Application (`/mobile`)
 The mobile application is a high-performance Expo & React Native app built to track follow-ups, leads, and workflow approvals on the go.
 
 1. **Navigate to the mobile directory:**
@@ -102,7 +102,7 @@ The mobile application is a high-performance Expo & React Native app built to tr
 
 ---
 
-## 🧠 Key Features & Workflows
+##  Key Features & Workflows
 
 * **AI Task Engine & Graph Executor (`backend/src/services/`)**: Implements complex graph-based task structures to autonomously manage customer outreach, follow-ups, and calendar schedules.
 * **Intelligent Leads Panel (`frontend/src/app/(dashboard)/leads/`)**: A rich, responsive UI dashboard displaying active sales funnels, custom lead details, and priority badges.
